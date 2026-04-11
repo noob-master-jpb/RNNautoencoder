@@ -13,13 +13,91 @@ HIDDEN_DIM = 64
 EOS_IDX = 26
 BEST_PATH = "best.pt"
 TEST_SAMPLES = 200
+INPUT_DIM = 27
+HIDDEN_DIM = 440
+EOS_IDX = 26
+BATCH_SIZE = 512*8
+LEARNING_RATE = 0.001
+EPOCHS = 500
+
+VAL_SPLIT = 0.1
+USE_BEST = True
+BEST_PATH = "best.pt"
+LR_FACTOR = 0.7
+LR_PATIENCE = 10
+LR_MIN = 1e-6
+
 TEST_WORDS = [
-	"hello",
-	"world",
-	"neural",
-	"network",
-	"random",
-    "testing","rnn","sequence","model","python","data","training","evaluation","accuracy","recall","precision","loss","optimizer","scheduler","cuda",
+    "asynchronous", "polymorphism", "encapsulation", "architecture", "concurrency",
+    "parallelism", "inheritance", "recursion", "scalability", "distributed",
+    "microservices", "orchestration", "deployment", "infrastructure", "configuration",
+    "optimization", "performance", "throughput", "latency", "bandwidth",
+    "bottleneck", "deadlock", "synchronization", "transaction", "consistency",
+    "availability", "partition", "redundancy", "resiliency", "observability",
+    "instrumentation", "monitoring", "telemetry", "visualisation", "abstraction",
+    "dependency", "injection", "singleton", "prototype", "decorator",
+    "mitochondria", "photosynthesis", "metabolism", "homeostasis", "evolutionary",
+    "biodiversity", "ecosystem", "environment", "atmospheric", "stratosphere",
+    "thermosphere", "ionosphere", "magnetosphere", "lithosphere", "hydrosphere",
+    "geochemical", "biophysical", "neurological", "cardiovascular", "respiratory",
+    "immunological", "endocrinology", "pharmacology", "toxicology", "pathological",
+    "therapeutic", "diagnostic", "radiological", "biotechnology", "nanotechnology",
+    "cybernetics", "cryptography", "blockchain", "consensus", "encryption",
+    "decryption", "authentication", "authorisation", "vulnerability", "remediation",
+    "existentialism", "phenomenology", "epistemology", "metaphysics", "ontology",
+    "utilitarianism", "structuralism", "nihilism", "pragmatism", "rationalism",
+    "empiricism", "stoicism", "humanism", "individualism", "collectivism",
+    "quintessential", "supercilious", "pusillanimous", "magnanimous", "fastidious",
+    "capricious", "surreptitious", "ephemeral", "clandestine", "pernicious",
+    "ubiquitous", "omnipresent", "ambivalent", "equivocal", "mercurial",
+    "phlegmatic", "sanguine", "melancholic", "choleric", "recalcitrant",
+    "intransigent", "incendiary", "provocative", "inflammatory", "contentious",
+    "argumentative", "adversarial", "antagonistic", "belligerent", "pugnacious",
+    "synchronous", "asymmetrical", "symmetrical", "proportional", "logarithmic",
+    "exponential", "stochastic", "probabilistic", "deterministic", "heuristic",
+    "algorithmic", "mathematical", "geometrical", "topological", "arithmetic",
+    "calculus", "differential", "integral", "derivative", "trigonometry",
+    "bureaucracy", "aristocracy", "democracy", "autocracy", "technocracy",
+    "meritocracy", "plutocracy", "oligarchy", "anarchy", "sovereignty",
+    "jurisdiction", "legislative", "executive", "judicial", "constitutional",
+    "parliamentary", "diplomatic", "international", "globalization", "privatization",
+    "nationalization", "liberalization", "regulation", "deregulation", "intervention",
+    "preliminary", "subsidiary", "supplementary", "additional", "fundamental",
+    "elementary", "intermediate", "advanced", "sophisticated", "complicated",
+    "convoluted", "intricate", "detailed", "comprehensive", "exhaustive",
+    "preparatory", "introductory", "concluding", "retrospective", "prospective",
+    "hypothetical", "theoretical", "empirical", "analytical", "synthetic",
+    "quantitative", "qualitative", "conceptual", "categorical", "systematic",
+    "methodological", "chronological", "geographical", "statistical", "demographic",
+    "fluctuation", "variation", "oscillation", "vibration", "resonance",
+    "equilibrium", "stability", "instability", "turbulence", "vorticity",
+    "viscosity", "buoyancy", "velocity", "acceleration", "momentum",
+    "inertia", "gravity", "friction", "resistance", "impedance",
+    "capacitance", "inductance", "conductivity", "permittivity", "permeability",
+    "transparency", "opacity", "reflectivity", "refraction", "diffraction",
+    "interference", "polarization", "frequency", "amplitude", "wavelength",
+    "spectrum", "radiation", "convection", "conduction", "emissivity",
+    "collaboration", "integration", "coordination", "synchronisation", "standardization",
+    "harmonization", "modernization", "digitalization", "transformation", "innovation",
+    "development", "implementation", "maintenance", "operation", "management",
+    "leadership", "strategy", "tactical", "operational", "administrative",
+    "personnel", "recruitment", "procurement", "logistics", "distribution",
+    "marketing", "advertising", "promotional", "sponsorship", "commercial",
+    "industrial", "agricultural", "financial", "economical", "monetary",
+    "statistical", "mathematical", "scientific", "biological", "chemical",
+    "physical", "geological", "astronomical", "meteorological", "ecological",
+    "environmental", "sociological", "psychological", "anthropological", "historical",
+    "linguistic", "philosophical", "theological", "educational", "technological",
+    "mechanical", "electrical", "electronic", "structural", "functional",
+    "dynamic", "static", "kinetic", "potential", "thermal",
+    "nuclear", "atomic", "molecular", "cellular", "genetic",
+    "hereditary", "chromosomal", "ribosomal", "cytoplasmic", "mitotic",
+    "meiotic", "metabolic", "enzymatic", "hormonal", "physiological",
+    "anatomical", "histological", "embryological", "evolutionary", "phylogenetic",
+    "taxonomy", "species", "genus", "family", "order",
+    "class", "phylum", "kingdom", "domain", "organism",
+    "population", "community", "ecosystem", "biosphere", "habitat",
+    "niche", "adaptation", "selection", "mutation", "variation",
 ]
 
 
@@ -93,7 +171,7 @@ def main():
 			one_hot = F.one_hot(encoded, num_classes=INPUT_DIM).to(dtype=torch.float32)
 			one_hot = one_hot.unsqueeze(0).to(device)
 
-			logits = model(one_hot, max_length=seq_len, stop_on_eos=False)
+			logits, _, __ = model(one_hot, max_length=seq_len, stop_on_eos=False)
 			preds = logits.argmax(dim=-1).squeeze(0).cpu()
 			pred_word = decode_indices(preds.tolist(), idx_to_char)
 
