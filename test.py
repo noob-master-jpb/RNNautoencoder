@@ -97,7 +97,8 @@ TEST_WORDS = [
     "taxonomy", "species", "genus", "family", "order",
     "class", "phylum", "kingdom", "domain", "organism",
     "population", "community", "ecosystem", "biosphere", "habitat",
-    "niche", "adaptation", "selection", "mutation", "variation",
+    "niche", "adaptation", "selection", "mutation", "variation","pn","eumonoul","tramicro","scopic","silico","volcano","con","iosis",
+    
 ]
 
 
@@ -174,8 +175,8 @@ def main():
 			logits, _, __ = model(one_hot, max_length=seq_len, stop_on_eos=False)
 			preds = logits.argmax(dim=-1).squeeze(0).cpu()
 			pred_word = decode_indices(preds.tolist(), idx_to_char)
-
-			print(f"IN: {word} | OUT: {pred_word}")
+			if word != pred_word:
+				print(f"IN: {word} | OUT: {pred_word}")
 
 			for target_idx, pred_idx in zip(encoded.tolist(), preds.tolist()):
 				total_tokens += 1
